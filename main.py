@@ -7,12 +7,7 @@ TOKEN_BOT = "8992344332:AAG-1KfsuscEpASmgUOGI1rXsAhOyeHQE0g"
 CHAT_ID = "6737964389"
 URL_PRODUK = "https://shopee.co.id/product/1727535752/49866663031"
 INTERVAL_CEK = 300
-API_KEY_SCRAPER = "1d6c8e3100db3ee9f38e4a9e52cbead7"
 # ===============================================
-
-HEADERS = {
-    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
-}
 
 def kirim_notifikasi_telegram(pesan):
     url = f"https://api.telegram.org/bot{TOKEN_BOT}/sendMessage"
@@ -36,7 +31,6 @@ def dapatkan_id_dari_url(url):
     return "49866663031", "1727535752"
 
 def ambil_data_shopee(item_id, shop_id):
-    def ambil_data_shopee(item_id, shop_id):
     url = f"https://shopee.co.id/api/v4/item/get?itemid={item_id}&shopid={shop_id}"
     headers = {
         "User-Agent": "Android app Shopee",
