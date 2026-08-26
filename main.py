@@ -5,9 +5,17 @@ import re
 # ================= KONFIGURASI =================
 TOKEN_BOT = "8992344332:AAG-1KfsuscEpASmgUOGI1rXsAhOyeHQE0g"
 CHAT_ID = "6737964389"
-URL_PRODUK = "https://shopee.co.id/product/1727535752/49866663031?d_id=121c5&uls_trackid=56ft3oeo003l&utm_content=2Wtj1M2JeuXi8qXK5xJvfknUqgGF"
+URL_PRODUK = "https://id.shp.ee/W9y3Vdex"
 INTERVAL_CEK = 300
 # ===============================================
+
+HEADERS = {
+    "User-Agent": "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Mobile Safari/537.36",
+    "Accept": "application/json, text/plain, */*",
+    "Accept-Language": "id-ID,id;q=0.9,en-US;q=0.8,en;q=0.7",
+    "Referer": "https://shopee.co.id/",
+    "X-Requested-With": "XMLHttpRequest"
+}
 
 def kirim_notifikasi_telegram(pesan):
     url = f"https://api.telegram.org/bot{TOKEN_BOT}/sendMessage"
@@ -18,11 +26,8 @@ def kirim_notifikasi_telegram(pesan):
         print(f"Gagal kirim Telegram: {e}")
 
 def dapatkan_id_dari_url(url):
-    headers = {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
-    }
     try:
-        res = requests.get(url, headers=headers, allow_redirects=True, timeout=10)
+        res = requests.get(url, headers=HEADERS, allow_redirects=True, timeout=10)
         final_url = res.url
 
         match1 = re.search(r"-i\.(\d+)\.(\d+)", final_url)
@@ -39,18 +44,21 @@ def dapatkan_id_dari_url(url):
 
 def ambil_data_shopee(item_id, shop_id):
     url = f"https://shopee.co.id/api/v4/item/get?itemid={item_id}&shopid={shop_id}"
-    headers = {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
-    }
     try:
-        res = requests.get(url, headers=headers, timeout=10)
+        res = requests.get(url, headers=HEADERS, timeout=10)
         if res.status_code == 200:
-            item = res.json().get("data", {})
-            return {
-                "nama": item.get("name", "Produk Shopee"),
-                "stok": item.get("stock", 0),
-                "harga": item.get("price", 0) / 100000
-            }
+            data = res.json()
+            item = data.get("data")
+            if item:
+                return {
+                    "nama": item.get("name", "Produk Shopee"),
+                    "stok": item.get("stock", 0),
+                    "harga": item.get("price", 0) / 100000
+                }
+            else:
+                print(f"Response API Shopee kosong/dibatasi: {data}")
+        else:
+            print(f"HTTP Status Error: {res.status_code}")
     except Exception as e:
         print(f"Error API: {e}")
     return None
@@ -81,7 +89,7 @@ def jalankan_bot():
             
             stok_terakhir = stok
             harga_terakhir = harga
-            print(f"[{time.strftime('%H:%M:%S')}] Stok: {stok} | Harga: Rp {harga:,.0f}")
+            print(f"[{time.strftime('%H:%M:%S')}] Cek Berhasil - Stok: {stok} | Harga: Rp {harga:,.0f}")
         else:
             print(f"[{time.strftime('%H:%M:%S')}] Gagal mengambil data.")
 
