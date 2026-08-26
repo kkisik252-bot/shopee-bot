@@ -5,7 +5,7 @@ import re
 # ================= KONFIGURASI =================
 TOKEN_BOT = "8992344332:AAG-1KfsuscEpASmgUOGI1rXsAhOyeHQE0g"
 CHAT_ID = "6737964389"
-URL_PRODUK = "https://id.shp.ee/W9y3Vdex"
+URL_PRODUK = "https://shopee.co.id/product/1727535752/49866663031"
 INTERVAL_CEK = 300
 # ===============================================
 
