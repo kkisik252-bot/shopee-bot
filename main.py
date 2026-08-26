@@ -36,10 +36,16 @@ def dapatkan_id_dari_url(url):
     return "49866663031", "1727535752"
 
 def ambil_data_shopee(item_id, shop_id):
-    target_api = f"https://shopee.co.id/api/v4/item/get?itemid={item_id}&shopid={shop_id}"
-    url_proxy = f"http://api.scraperapi.com?api_key={API_KEY_SCRAPER}&url={target_api}"
+    def ambil_data_shopee(item_id, shop_id):
+    url = f"https://shopee.co.id/api/v4/item/get?itemid={item_id}&shopid={shop_id}"
+    headers = {
+        "User-Agent": "Android app Shopee",
+        "Accept": "application/json",
+        "X-Shopee-Language": "id",
+        "Referer": f"https://shopee.co.id/product/{shop_id}/{item_id}"
+    }
     try:
-        res = requests.get(url_proxy, timeout=30)
+        res = requests.get(url, headers=headers, timeout=15)
         if res.status_code == 200:
             data = res.json()
             item = data.get("data")
@@ -50,7 +56,7 @@ def ambil_data_shopee(item_id, shop_id):
                     "harga": item.get("price", 0) / 100000
                 }
             else:
-                print(f"Response API Shopee kosong: {data}")
+                print(f"Data API Kosong: {data}")
         else:
             print(f"HTTP Status Error: {res.status_code}")
     except Exception as e:
